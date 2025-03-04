@@ -5,6 +5,11 @@ import com.cars24.Generic.data.entities.Prompt;
 import com.cars24.Generic.data.responses.PromptResponse;
 import com.cars24.Generic.service.PromptService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+//import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +20,16 @@ public class PromptServiceImpl implements PromptService {
 
     @Autowired
     private PromptDao promptDao;
-
+    @Autowired
+    private MongoTemplate mongoTemplate;
     @Override
     public List<PromptResponse> getInitialPrompts() {
-        List<Prompt> prompts = promptDao.findMainCategoriesWithDisplayOrder();
+        Query query = new Query(Criteria
+                .where("category").is("main_category")
+                .and("displayOrder").lte(5));
+        query.with(Sort.by(Sort.Order.asc("id")));
+        List<Prompt> prompts = mongoTemplate.find(query, Prompt.class);
+        //List<Prompt> prompts = promptDao.findMainCategoriesWithDisplayOrder();
         return prompts.stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
@@ -26,20 +37,35 @@ public class PromptServiceImpl implements PromptService {
 
     @Override
     public PromptResponse getPromptById(String promptId) {
-        Prompt prompt = promptDao.findById(promptId)
-                .orElseThrow(() -> new RuntimeException("Prompt not found: " + promptId));
+        Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
+        //Prompt prompt = promptDao.findById(promptId)
+//                .orElseThrow(() -> new RuntimeException("Prompt not found: " + promptId));
+//        return convertToResponse(prompt);
+        if (prompt == null) {
+            throw new RuntimeException("Prompt not found: " + promptId);
+        }
         return convertToResponse(prompt);
     }
 
     @Override
     public List<PromptResponse> getNextPrompts(String promptId) {
+
 //        Prompt prompt = promptDao.findById(promptId)
 //                .orElseThrow(() -> new RuntimeException("Prompt not found: " + promptId));
-        Prompt prompt = promptDao.findById(promptId)
-                .orElseThrow(() -> new RuntimeException("Prompt not found: " + promptId));
+//
+//
+//        List<Prompt> nextPrompts = promptDao.findAllByIdIn(prompt.getNextPromptIds());
+//        return nextPrompts.stream()
+//                .map(this::convertToResponse)
+//                .collect(Collectors.toList());
+        Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
+        if (prompt == null) {
+            throw new RuntimeException("Prompt not found: " + promptId);
+        }
 
+        Query query = new Query(Criteria.where("_id").in(prompt.getNextPromptIds()));
+        List<Prompt> nextPrompts = mongoTemplate.find(query, Prompt.class);
 
-        List<Prompt> nextPrompts = promptDao.findAllByIdIn(prompt.getNextPromptIds());
         return nextPrompts.stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
