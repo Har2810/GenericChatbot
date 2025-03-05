@@ -3,6 +3,7 @@ package com.cars24.Generic.service.impl;
 import com.cars24.Generic.data.dao.PromptDao;
 import com.cars24.Generic.data.entities.Prompt;
 import com.cars24.Generic.data.responses.PromptResponse;
+import com.cars24.Generic.exceptions.PromptNotFoundException;
 import com.cars24.Generic.service.PromptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -42,7 +43,7 @@ public class PromptServiceImpl implements PromptService {
 //                .orElseThrow(() -> new RuntimeException("Prompt not found: " + promptId));
 //        return convertToResponse(prompt);
         if (prompt == null) {
-            throw new RuntimeException("Prompt not found: " + promptId);
+            throw new PromptNotFoundException("Prompt not found: " + promptId);
         }
         return convertToResponse(prompt);
     }
@@ -60,7 +61,7 @@ public class PromptServiceImpl implements PromptService {
 //                .collect(Collectors.toList());
         Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
         if (prompt == null) {
-            throw new RuntimeException("Prompt not found: " + promptId);
+            throw new PromptNotFoundException("Prompt not found: "+promptId);
         }
 
         Query query = new Query(Criteria.where("_id").in(prompt.getNextPromptIds()));
