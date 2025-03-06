@@ -3,12 +3,12 @@ package com.cars24.Generic.controllers;
 //package com.loans24.chatbot.controller;
 
 
+import com.cars24.Generic.data.responses.ApiResponse;
+import com.cars24.Generic.data.responses.ChatbotInteractionResponse;
 import com.cars24.Generic.data.responses.PromptResponse;
 import com.cars24.Generic.data.responses.ResponseResponse;
 import com.cars24.Generic.service.PromptService;
 import com.cars24.Generic.service.ResponseService;
-import com.cars24.Generic.service.impl.PromptServiceImpl;
-import com.cars24.Generic.service.impl.ResponseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,9 +29,9 @@ public class ChatbotController {
     private ResponseService responseService;
 
     @GetMapping("/initial-prompts")
-    public ResponseEntity<List<PromptResponse>> getInitialPrompts() {
+    public ResponseEntity<ApiResponse<List<PromptResponse>>> getInitialPrompts() {
         List<PromptResponse> prompts = promptService.getInitialPrompts();
-        return ResponseEntity.ok(prompts);
+        return ResponseEntity.ok((ApiResponse.success(prompts, "Initial prompts fetches successfully")));
     }
 
     @GetMapping("/prompt/{promptId}")
@@ -41,16 +41,28 @@ public class ChatbotController {
     }
 
     @GetMapping("/response/{promptId}")
-    public ResponseEntity<ResponseResponse> getResponseForPrompt(@PathVariable String promptId) {
+    public ResponseEntity<ApiResponse<ResponseResponse>> getResponseForPrompt(@PathVariable String promptId) {
         ResponseResponse response = responseService.getResponseByPromptId(promptId);
-        return ResponseEntity.ok(response);
+        //return ResponseEntity.ok(response);
+        return ResponseEntity.ok((ApiResponse.success(response, "promptId fetched successfully")));
     }
 
     @GetMapping("/next-prompts/{promptId}")
-    public ResponseEntity<List<PromptResponse>> getNextPrompts(@PathVariable String promptId) {
+    public ResponseEntity<ApiResponse<List<PromptResponse>>> getNextPrompts(@PathVariable String promptId) {
         List<PromptResponse> prompts = promptService.getNextPrompts(promptId);
-        return ResponseEntity.ok(prompts);
+        return ResponseEntity.ok((ApiResponse.success(prompts, "next prompt details fetched successfully")));
     }
 
+    @GetMapping("/interaction/{promptId}")
+    public ResponseEntity<ApiResponse<ChatbotInteractionResponse>> getInteractionDetails(@PathVariable String promptId) {
+        ChatbotInteractionResponse response = new ChatbotInteractionResponse();
 
+        ResponseResponse botResponse = responseService.getResponseByPromptId(promptId);
+        response.setResponse(botResponse);
+
+        List<PromptResponse> nextPrompts = promptService.getNextPrompts(promptId);
+        response.setNextPrompts(nextPrompts);
+
+        return ResponseEntity.ok(ApiResponse.success(response, "Interaction details fetched successfully"));
+    }
 }
