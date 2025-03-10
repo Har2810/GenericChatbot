@@ -9,7 +9,7 @@ import java.util.List;
 //import org.springframework.data.annotation.Id;
 
 @Data
-@Document(collection = "prompts")
+@Document(collection = "Generic_prompts")
 public class Prompt {
     @Id
     private String id;

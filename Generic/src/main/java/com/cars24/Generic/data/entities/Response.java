@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 @Data
-@Document(collection = "responses")
+@Document(collection = "Generic_responses")
 public class Response {
     @Id
     private String id;
