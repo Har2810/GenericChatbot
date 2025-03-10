@@ -1,24 +1,11 @@
 package com.cars24.Generic.data.responses;
 
+import lombok.Data;
+
 import java.util.List;
-
+@Data
 public class ChatbotInteractionResponse {
-    private ResponseResponse response;  // Bot's response to the prompt
-    private List<PromptResponse> nextPrompts;  // Next available options/prompts for user
-
-    public ResponseResponse getResponse() {
-        return response;
-    }
-
-    public void setResponse(ResponseResponse response) {
-        this.response = response;
-    }
-
-    public List<PromptResponse> getNextPrompts() {
-        return nextPrompts;
-    }
-
-    public void setNextPrompts(List<PromptResponse> nextPrompts) {
-        this.nextPrompts = nextPrompts;
-    }
+    private RespCollectionResponse response;  // Bot's response to the prompt
+    private List<NextPromptResponse> nextPrompts;
+    private List<NextPromptResponse> initialPrompts;
 }

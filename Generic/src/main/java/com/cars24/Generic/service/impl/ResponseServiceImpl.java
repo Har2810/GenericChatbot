@@ -5,7 +5,7 @@ package com.cars24.Generic.service.impl;
 import com.cars24.Generic.data.entities.Prompt;
 import com.cars24.Generic.data.entities.Response;
 import com.cars24.Generic.data.repositories.ResponseRepository;
-import com.cars24.Generic.data.responses.ResponseResponse;
+import com.cars24.Generic.data.responses.RespCollectionResponse;
 import com.cars24.Generic.exceptions.PromptNotFoundException;
 import com.cars24.Generic.exceptions.ResponseNotFoundException;
 import com.cars24.Generic.service.ResponseService;
@@ -23,14 +23,11 @@ public class ResponseServiceImpl implements ResponseService {
     private ResponseRepository responseRepository;
 
     @Override
-    public ResponseResponse getResponseByPromptId(String promptId) {
+    public RespCollectionResponse getResponseByPromptId(String promptId) {
         Prompt prompt = mongoTemplate.findById(promptId, Prompt.class);
         if (prompt == null) {
             throw new PromptNotFoundException("Prompt not found: " + promptId);
         }
-//        Response response = responseRepository.findByPromptId(promptId)
-//                .orElseThrow(() -> new RuntimeException("Response not found for prompt: " + promptId));
-//        return convertToResponse(response);
         Query query = new Query(Criteria.where("promptId").is(promptId));
         Response response = mongoTemplate.findOne(query, Response.class);
         if (response == null) {
@@ -39,13 +36,13 @@ public class ResponseServiceImpl implements ResponseService {
         return convertToResponse(response);
     }
 
-    private ResponseResponse convertToResponse(Response response) {
-        ResponseResponse responseDto = new ResponseResponse();
-        responseDto.setId(response.getId());
-        responseDto.setPromptId(response.getPromptId());
-        responseDto.setText(response.getText());
-        responseDto.setHasAttachments(response.isHasAttachments());
-        return responseDto;
+    private RespCollectionResponse convertToResponse(Response response) {
+        RespCollectionResponse respCollectionResponse = new RespCollectionResponse();
+        respCollectionResponse.setId(response.getId());
+        respCollectionResponse.setPromptId(response.getPromptId());
+        respCollectionResponse.setText(response.getText());
+        respCollectionResponse.setHasAttachments(response.isHasAttachments());
+        return respCollectionResponse;
     }
 }
 

@@ -2,9 +2,9 @@ package com.cars24.Generic.service;
 
 //package com.cars24.Generic.service;
 
-import com.cars24.Generic.data.responses.ResponseResponse;
+import com.cars24.Generic.data.responses.RespCollectionResponse;
 
 public interface ResponseService {
-    ResponseResponse getResponseByPromptId(String promptId);
+    RespCollectionResponse getResponseByPromptId(String promptId);
 }
 
