@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = new ApiResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
-                "APPUSR-" + HttpStatus.BAD_REQUEST.value(),
+                "GENERIC_CHATBOT-" + HttpStatus.BAD_REQUEST.value(),
                 false,
                 null
         );
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = new ApiResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
-                "APPUSR-" + HttpStatus.BAD_REQUEST.value(),
+                "GENERIC_CHATBOT-" + HttpStatus.BAD_REQUEST.value(),
                 false,
                 null
         );
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = new ApiResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "An unexpected error occurred.",
-                "APPUSR-" + HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "GENERIC_CHATBOT-" + HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 false,
                 null
         );
