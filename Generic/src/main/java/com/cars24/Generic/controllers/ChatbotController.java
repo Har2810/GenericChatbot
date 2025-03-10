@@ -29,8 +29,8 @@ public class ChatbotController {
     @GetMapping("/interaction")
     //@ResponseBody
     public ResponseEntity<ApiResponse> getChatbotData(
-            @RequestParam(required = false) String promptId) {
-
+            @RequestParam(value = "prompt_id", required = false) String promptId){
+           // @RequestParam(required = false) String promptId) {
         ChatbotInteractionResponse response = new ChatbotInteractionResponse();
 
         // If promptId is not provided, return initial prompts
